@@ -24,7 +24,25 @@ def main_view(request):
 
 def dep_view(request, departure):
     if departure in data.departures.keys():
-        return render(request, 'tours/departure.html')
+        copytour = data.tours.copy()
+        deptour = []
+        for i in data.tours.keys():
+            if data.tours[i]["departure"] == departure:
+                copytour[i]["numtour"] = i
+                deptour += [copytour[i]]
+        minprice = min([i["price"] for i in deptour])
+        maxprice = max([i["price"] for i in deptour])
+        minnight = min([i["nights"] for i in deptour])
+        maxnight = max([i["nights"] for i in deptour])
+        return render(request, 'tours/departure.html', context={
+            "deptour": deptour,
+            "from": data.departures[departure],
+            "minprice": minprice,
+            "maxprice": maxprice,
+            "minnight": minnight,
+            "maxnight": maxnight,
+            "cnt": len(deptour),
+        })
     else:
         raise Http404
 
