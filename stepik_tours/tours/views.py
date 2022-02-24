@@ -1,10 +1,25 @@
 from django.shortcuts import render
 from django.http import HttpResponseNotFound, HttpResponseServerError, Http404
 import tours.data as data
+from random import randint
 
 
 def main_view(request):
-    return render(request, 'tours/index.html')
+    copytour = data.tours.copy()
+    rnd = []
+    rndtour = []
+    while len(rnd) != 6:
+        a = randint(1, len(data.tours))
+        if a not in rnd:
+            rnd += [a]
+            copytour[a]['numtour'] = a
+            rndtour += [copytour[a]]
+
+    return render(request, 'tours/index.html', context={
+        "subtitle": data.subtitle,
+        "descr": data.description,
+        "rndtour": rndtour,
+    })
 
 
 def dep_view(request, departure):
